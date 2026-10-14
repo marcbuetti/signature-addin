@@ -44,7 +44,26 @@ To remove: `npm run unsideload`.
 | `assets/make-icons.js` | Generates solid-color PNG icons |
 | `sideload.ps1` | Registers/removes the manifest for desktop sideloading |
 
+## Hosting (GitHub Pages)
+
+The add-in is hosted at **https://marcbuetti.github.io/signature-addin/** (GitHub Pages, master branch).
+The manifest points at these URLs. To update the add-in, push to `master`; Pages redeploys automatically.
+
+- Runtime: https://marcbuetti.github.io/signature-addin/commands/commands.html
+- Manifest: https://marcbuetti.github.io/signature-addin/manifest.xml
+
+## Deployment to new Outlook (M365 admin center)
+
+New Outlook and Outlook on the web no longer offer end-user "add from file" sideloading, so the add-in
+is deployed centrally:
+
+1. https://admin.microsoft.com → **Settings → Integrated apps → Upload custom apps**
+2. App type **Office Add-in**, provide the manifest URL above (or upload `manifest.xml`)
+3. Assign to a test user / group, accept permissions, deploy
+4. It appears in new Outlook within minutes–hours; start a new message to trigger the signature
+
+(Local dev with `npm run dev` + registry sideload still works for **classic** Outlook testing.)
+
 ## Next steps (not yet built)
 
 - Pull the signature template + per-user data from SharePoint (as the WPF app does) instead of the hardcoded prototype signature.
-- Decide hosting for real deployment (GitHub Pages / static host) and central deployment via the M365 admin center.
