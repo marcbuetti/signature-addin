@@ -1,0 +1,18 @@
+{
+  "name": "outlook-signature-addin",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Outlook web add-in that auto-inserts a company signature on new message compose (new Outlook / classic / web).",
+  "scripts": {
+    "certs": "office-addin-dev-certs install",
+    "icons": "node assets/make-icons.js",
+    "dev": "node dev-server.js",
+    "sideload": "powershell -ExecutionPolicy Bypass -File ./sideload.ps1 -Action add",
+    "unsideload": "powershell -ExecutionPolicy Bypass -File ./sideload.ps1 -Action remove",
+    "validate": "office-addin-manifest validate manifest.xml"
+  },
+  "devDependencies": {
+    "office-addin-dev-certs": "^1.13.0",
+    "office-addin-manifest": "^1.13.0"
+  }
+}
