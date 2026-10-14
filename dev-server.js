@@ -34,6 +34,7 @@ function send(res, status, body, type) {
   https
     .createServer(options, (req, res) => {
       try {
+        console.log(new Date().toISOString(), req.method, req.url);
         const urlPath = decodeURIComponent(req.url.split("?")[0]);
         let rel = urlPath === "/" ? "/index.html" : urlPath;
         const filePath = path.join(ROOT, rel);

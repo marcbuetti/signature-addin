@@ -13,12 +13,12 @@
   <DefaultLocale>en-US</DefaultLocale>
   <DisplayName DefaultValue="Signature Manager (Add-in)"/>
   <Description DefaultValue="Automatically inserts the company email signature when you compose a new message."/>
-  <IconUrl DefaultValue="https://localhost:3000/assets/icon-32.png"/>
-  <HighResolutionIconUrl DefaultValue="https://localhost:3000/assets/icon-128.png"/>
-  <SupportUrl DefaultValue="https://localhost:3000/"/>
+  <IconUrl DefaultValue="https://marcbuetti.github.io/signature-addin/assets/icon-32.png"/>
+  <HighResolutionIconUrl DefaultValue="https://marcbuetti.github.io/signature-addin/assets/icon-128.png"/>
+  <SupportUrl DefaultValue="https://marcbuetti.github.io/signature-addin/"/>
 
   <AppDomains>
-    <AppDomain>https://localhost:3000</AppDomain>
+    <AppDomain>https://marcbuetti.github.io</AppDomain>
   </AppDomains>
 
   <Hosts>
@@ -34,7 +34,7 @@
   <FormSettings>
     <Form xsi:type="ItemRead">
       <DesktopSettings>
-        <SourceLocation DefaultValue="https://localhost:3000/commands/commands.html"/>
+        <SourceLocation DefaultValue="https://marcbuetti.github.io/signature-addin/commands/commands.html"/>
         <RequestedHeight>250</RequestedHeight>
       </DesktopSettings>
     </Form>
@@ -84,8 +84,8 @@
 
       <Resources>
         <bt:Urls>
-          <bt:Url id="WebViewRuntime.Url" DefaultValue="https://localhost:3000/commands/commands.html"/>
-          <bt:Url id="JSRuntime.Url" DefaultValue="https://localhost:3000/commands/commands.js"/>
+          <bt:Url id="WebViewRuntime.Url" DefaultValue="https://marcbuetti.github.io/signature-addin/commands/commands.html"/>
+          <bt:Url id="JSRuntime.Url" DefaultValue="https://marcbuetti.github.io/signature-addin/commands/commands.js"/>
         </bt:Urls>
         <bt:ShortStrings>
           <bt:String id="GetStarted.Title" DefaultValue="Signature Manager Add-in"/>
