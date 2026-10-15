@@ -1,0 +1,259 @@
+<title>Signatur-Vorschau</title>
+<meta name="description" content="Interaktive Vorschau der automatisch eingefügten Vegilife-Signatur im neuen Outlook, mit drei Design-Varianten.">
+<style>
+  /* Layout: a mock Outlook compose window (left/main) beside a control panel (right),
+     stacking to one column on phones. Email "paper" stays light in both themes. */
+  :root{
+    --brand:#2f9e5f;          /* Vegilife green */
+    --brand-deep:#1f7a47;
+    --brand-tint:#eaf6ef;
+    --ink:#1b2420;            /* green-biased near-black */
+    --muted:#5d6b64;
+    --line:#dfe5e1;
+    --bg:#eef1ee;            /* green-biased off-white */
+    --panel:#ffffff;
+    --panel-2:#f6f8f6;
+    --chip:#eef4f0;
+    --focus:#2f9e5f;
+    --font-ui:"Manrope",-apple-system,Segoe UI,Roboto,sans-serif;
+    --font-sig:"IBM Plex Sans",Arial,Helvetica,sans-serif;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --ink:#e8efe9; --muted:#9fb0a7; --line:#2b332e;
+      --bg:#141813; --panel:#1b211c; --panel-2:#20271f; --chip:#243026;
+      --brand-tint:#163322; color-scheme:dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e8efe9; --muted:#9fb0a7; --line:#2b332e;
+    --bg:#141813; --panel:#1b211c; --panel-2:#20271f; --chip:#243026;
+    --brand-tint:#163322; color-scheme:dark;
+  }
+
+  *{box-sizing:border-box}
+  body{background:var(--bg);color:var(--ink);font-family:var(--font-ui);
+       -webkit-font-smoothing:antialiased;line-height:1.45}
+  .wrap{max-width:1120px;margin:0 auto;padding-block:28px;padding-left:16px;padding-right:16px}
+
+  header.page{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 14px;margin-bottom:6px}
+  header.page h1{font-size:clamp(22px,3vw,30px);font-weight:800;letter-spacing:-.02em;margin:0;text-wrap:balance}
+  .eyebrow{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--brand-deep)}
+  header.page p{margin:0;color:var(--muted);font-size:14px;flex-basis:100%;max-width:62ch}
+
+  .grid{display:grid;grid-template-columns:1fr 340px;gap:20px;margin-top:22px;align-items:start}
+  @media (max-width:860px){.grid{grid-template-columns:1fr}}
+
+  /* ---- Mock Outlook compose window ---- */
+  .mail{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;
+        box-shadow:0 10px 30px rgba(20,40,30,.08);min-width:0}
+  .mail__bar{display:flex;align-items:center;gap:10px;padding:11px 14px;
+             background:linear-gradient(var(--panel-2),var(--panel-2));border-bottom:1px solid var(--line)}
+  .mail__title{font-weight:700;font-size:13px;color:var(--muted)}
+  .send{margin-left:auto;display:inline-flex;align-items:center;gap:7px;background:var(--brand);
+        color:#fff;border:none;border-radius:8px;padding:7px 14px;font-weight:700;font-size:13px;font-family:inherit;cursor:pointer}
+  .send:hover{background:var(--brand-deep)}
+
+  .fields{padding:4px 16px}
+  .frow{display:flex;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
+  .frow .lbl{width:52px;color:var(--muted);font-weight:600}
+  .frow .val{color:var(--ink)}
+  .pill{display:inline-flex;align-items:center;gap:6px;background:var(--chip);border:1px solid var(--line);
+        border-radius:999px;padding:3px 10px 3px 4px;font-size:13px;font-weight:600}
+  .ava{width:20px;height:20px;border-radius:50%;background:var(--brand);color:#fff;font-size:11px;font-weight:700;
+       display:inline-flex;align-items:center;justify-content:center}
+
+  /* email body = white paper in both themes, like a real message */
+  .paper{background:#fff;color:#1b2420;margin:14px;border-radius:10px;border:1px solid #e7ece8;
+         padding:22px 22px 26px;min-height:230px}
+  .paper .typed{font-family:var(--font-sig);font-size:15px;color:#2a332e;margin:0 0 2px}
+  .paper .cursor{display:inline-block;width:1.5px;height:17px;background:var(--brand);vertical-align:-3px;
+                 margin-left:1px;animation:blink 1.1s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+  @media (prefers-reduced-motion:reduce){.paper .cursor{animation:none}}
+  .auto-tag{display:inline-flex;align-items:center;gap:6px;margin-top:14px;margin-bottom:4px;
+            font-family:var(--font-ui);font-size:11px;font-weight:700;letter-spacing:.04em;color:var(--brand-deep);
+            background:var(--brand-tint);border-radius:6px;padding:3px 8px}
+
+  /* ---- Signature (lives on white paper; fixed light colors) ---- */
+  .sig{font-family:var(--font-sig);color:#2a332e;font-size:13px;line-height:1.5;margin-top:10px}
+  .sig a,.sig .lnk{color:#1f7a47;text-decoration:none}
+  .sig .nm{font-weight:700;font-size:15px;color:#17201b;letter-spacing:-.01em}
+  .sig .role{color:#5d6b64}
+  .sig .co{color:#1f7a47;font-weight:700}
+  .sig .lab{display:inline-block;width:16px;color:#9aa8a0;font-weight:700}
+  .sig .meta{color:#6b7a72;font-size:12px}
+  /* A: accent bar */
+  .sig--a{border-left:3px solid #2f9e5f;padding-left:14px}
+  .sig--a .block+.block{margin-top:7px}
+  /* B: logo left */
+  .sig--b{display:flex;gap:16px;align-items:flex-start}
+  .sig--b .brandcol{flex:0 0 auto;text-align:center;padding-right:16px;border-right:1px solid #e3e9e5}
+  .sig--b .mono{width:46px;height:46px;border-radius:12px;background:#2f9e5f;color:#fff;font-weight:800;
+                font-size:24px;display:flex;align-items:center;justify-content:center;margin:0 auto 7px}
+  .sig--b .word{font-weight:800;color:#17201b;font-size:14px;letter-spacing:-.01em}
+  .sig--b .tag{font-size:10.5px;color:#8a978f;margin-top:2px}
+  /* C: compact */
+  .sig--c .nm{font-size:14px}
+  .sig--c .dim{color:#9aa8a0;margin:0 7px}
+
+  .leaf{display:inline-block;width:12px;height:12px;vertical-align:-1px;margin-right:5px}
+
+  /* ---- Control panel ---- */
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 16px 18px;
+         position:sticky;top:12px}
+  .panel h2{margin:0 0 3px;font-size:13px;font-weight:800;letter-spacing:.02em}
+  .panel .hint{margin:0 0 14px;color:var(--muted);font-size:12px}
+  .seg{display:flex;gap:6px;background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:4px;margin-bottom:16px}
+  .seg button{flex:1;border:none;background:transparent;color:var(--muted);font-family:inherit;font-weight:700;
+              font-size:12px;padding:8px 4px;border-radius:7px;cursor:pointer;line-height:1.2}
+  .seg button[aria-pressed="true"]{background:var(--brand);color:#fff}
+  .field{margin-bottom:11px}
+  .field label{display:block;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
+               color:var(--muted);margin-bottom:4px}
+  .field input{width:100%;font-family:inherit;font-size:14px;color:var(--ink);background:var(--panel-2);
+               border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+  .field input:focus{outline:2px solid var(--focus);outline-offset:1px;border-color:transparent}
+  .note{margin-top:14px;font-size:12px;color:var(--muted);background:var(--panel-2);border:1px solid var(--line);
+        border-radius:10px;padding:10px 12px;line-height:1.5}
+  .note b{color:var(--ink)}
+
+  .compare{margin-top:22px}
+  .compare h3{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  @media (max-width:640px){.cards{grid-template-columns:1fr}}
+  .card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px;cursor:pointer;text-align:left}
+  .card[aria-pressed="true"]{outline:2px solid var(--brand);outline-offset:0}
+  .card .cap{font-family:var(--font-ui);font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;
+             color:var(--brand-deep);margin-bottom:9px}
+  .card .mini{transform:scale(.92);transform-origin:top left}
+
+  footer{margin-top:26px;color:var(--muted);font-size:12px;text-align:center}
+</style>
+
+<div class="wrap">
+  <header class="page">
+    <span class="eyebrow">Outlook Add-in · Prototyp</span>
+    <h1>Signatur-Vorschau</h1>
+    <p>So fügt das Add-in beim Schreiben einer neuen Mail automatisch die Firmensignatur ein. Wähle eine Variante, passe die Felder an — im echten Betrieb kommen die Daten automatisch aus dem M365-/SharePoint-Profil.</p>
+  </header>
+
+  <div class="grid">
+    <!-- Mock compose window -->
+    <section class="mail" aria-label="Outlook Nachrichtenfenster">
+      <div class="mail__bar">
+        <span class="mail__title">Neue Nachricht</span>
+        <button class="send" type="button">Senden</button>
+      </div>
+      <div class="fields">
+        <div class="frow"><span class="lbl">An</span><span class="pill"><span class="ava">A</span>anita.bourquin@vegilife.ch</span></div>
+        <div class="frow"><span class="lbl">Betreff</span><span class="val">Bestellbestätigung — Lieferung KW 43</span></div>
+      </div>
+      <div class="paper">
+        <p class="typed">Guten Tag Frau Bourquin,</p>
+        <p class="typed">besten Dank für Ihre Bestellung — die Lieferung ist für kommende Woche eingeplant.<span class="cursor"></span></p>
+        <span class="auto-tag">✓ Signatur automatisch eingefügt</span>
+        <div id="sigHost"></div>
+      </div>
+    </section>
+
+    <!-- Controls -->
+    <aside class="panel" aria-label="Einstellungen">
+      <h2>Variante</h2>
+      <p class="hint">Drei Stile zum Vergleichen.</p>
+      <div class="seg" role="group" aria-label="Signaturvariante">
+        <button type="button" data-variant="a" aria-pressed="true">Akzent­balken</button>
+        <button type="button" data-variant="b" aria-pressed="false">Logo links</button>
+        <button type="button" data-variant="c" aria-pressed="false">Kompakt</button>
+      </div>
+
+      <h2>Daten</h2>
+      <p class="hint">Später automatisch pro Mitarbeiter.</p>
+      <div class="field"><label for="f-name">Name</label><input id="f-name" data-k="name" value="Marcel Bourquin"></div>
+      <div class="field"><label for="f-role">Rolle</label><input id="f-role" data-k="role" value="Geschäftsführer"></div>
+      <div class="field"><label for="f-phone">Telefon</label><input id="f-phone" data-k="phone" value="+41 32 512 85 00"></div>
+      <div class="field"><label for="f-mobile">Mobil</label><input id="f-mobile" data-k="mobile" value="+41 79 214 66 08"></div>
+      <div class="field"><label for="f-email">E-Mail</label><input id="f-email" data-k="email" value="marcel.bourquin@vegilife.ch"></div>
+
+      <p class="note"><b>Hinweis:</b> Name, Rolle und Kontakt werden im Live-Betrieb nicht hier getippt, sondern aus dem Microsoft-365-Profil bzw. eurem SharePoint-Signaturprofil gezogen — wie im bestehenden Signature Manager.</p>
+    </aside>
+  </div>
+
+  <!-- Compare strip -->
+  <section class="compare">
+    <h3>Alle drei im Vergleich</h3>
+    <div class="cards">
+      <button class="card" type="button" data-variant="a" aria-pressed="true"><div class="cap">Akzentbalken</div><div class="mini" id="mini-a"></div></button>
+      <button class="card" type="button" data-variant="b" aria-pressed="false"><div class="cap">Logo links</div><div class="mini" id="mini-b"></div></button>
+      <button class="card" type="button" data-variant="c" aria-pressed="false"><div class="cap">Kompakt</div><div class="mini" id="mini-c"></div></button>
+    </div>
+  </section>
+
+  <footer>Prototyp — Vegilife Signatur-Add-in · Darstellung dient nur der Abstimmung des Designs.</footer>
+</div>
+
+<script>
+  var data = {
+    name:"Marcel Bourquin", role:"Geschäftsführer",
+    company:"Vegilife AG", phone:"+41 32 512 85 00", mobile:"+41 79 214 66 08",
+    email:"marcel.bourquin@vegilife.ch", web:"www.vegilife.ch",
+    address:"Solothurnstrasse 12 · CH-2544 Bettlach", tagline:"Pflanzlich. Schweizer Qualität."
+  };
+  var active = "a";
+
+  var LEAF = '<svg class="leaf" viewBox="0 0 24 24" fill="#2f9e5f" aria-hidden="true"><path d="M5 19C5 11 11 5 19 5c0 8-6 14-14 14zm2-2c5-.5 9-4.5 9.6-9.6C11.5 8 7.5 12 7 17z"/></svg>';
+
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+
+  function render(variant, d){
+    var nm=esc(d.name), role=esc(d.role), co=esc(d.company),
+        ph=esc(d.phone), mo=esc(d.mobile), em=esc(d.email), web=esc(d.web),
+        addr=esc(d.address), tag=esc(d.tagline);
+
+    if(variant==="a"){
+      return '<div class="sig sig--a">'
+        + '<div class="block"><div class="nm">'+nm+'</div><div class="role">'+role+'</div>'
+        + '<div class="co">'+LEAF+co+'</div></div>'
+        + '<div class="block">'
+        + '<div><span class="lab">T</span>'+ph+'</div>'
+        + '<div><span class="lab">M</span>'+mo+'</div>'
+        + '<div><span class="lab">E</span><span class="lnk">'+em+'</span></div>'
+        + '<div><span class="lab">W</span><span class="lnk">'+web+'</span></div></div>'
+        + '<div class="block meta">'+addr+'</div>'
+        + '</div>';
+    }
+    if(variant==="b"){
+      return '<div class="sig sig--b">'
+        + '<div class="brandcol"><div class="mono">V</div><div class="word">vegilife</div><div class="tag">'+tag+'</div></div>'
+        + '<div class="txtcol">'
+        + '<div class="nm">'+nm+'</div><div class="role">'+role+'</div>'
+        + '<div class="co" style="margin:5px 0 7px">'+co+'</div>'
+        + '<div><span class="lab">T</span>'+ph+' &nbsp; <span class="lab">M</span>'+mo+'</div>'
+        + '<div><span class="lnk">'+em+'</span> &nbsp;·&nbsp; <span class="lnk">'+web+'</span></div>'
+        + '<div class="meta" style="margin-top:5px">'+addr+'</div>'
+        + '</div></div>';
+    }
+    // c compact
+    return '<div class="sig sig--c">'
+      + '<div><span class="nm">'+nm+'</span><span class="dim">·</span><span class="role">'+role+'</span></div>'
+      + '<div class="co" style="margin:3px 0 4px">'+LEAF+co+'</div>'
+      + '<div class="meta">'+ph+' &nbsp;·&nbsp; '+mo+' &nbsp;·&nbsp; <span class="lnk">'+em+'</span> &nbsp;·&nbsp; <span class="lnk">'+web+'</span></div>'
+      + '</div>';
+  }
+
+  function paint(){
+    document.getElementById("sigHost").innerHTML = render(active, data);
+    ["a","b","c"].forEach(function(v){ document.getElementById("mini-"+v).innerHTML = render(v, data); });
+    document.querySelectorAll(".seg button").forEach(function(b){ b.setAttribute("aria-pressed", String(b.dataset.variant===active)); });
+    document.querySelectorAll(".card").forEach(function(b){ b.setAttribute("aria-pressed", String(b.dataset.variant===active)); });
+  }
+
+  document.querySelectorAll("[data-variant]").forEach(function(btn){
+    btn.addEventListener("click", function(){ active = btn.dataset.variant; paint(); });
+  });
+  document.querySelectorAll("input[data-k]").forEach(function(inp){
+    inp.addEventListener("input", function(){ data[inp.dataset.k] = inp.value || ""; paint(); });
+  });
+
+  paint();
+</script>

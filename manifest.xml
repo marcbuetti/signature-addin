@@ -6,13 +6,12 @@
   xmlns:mailappor="http://schemas.microsoft.com/office/mailappversionoverrides/1.0"
   xsi:type="MailApp">
 
-  <!-- Prototype: auto-insert a company signature on new message compose. -->
   <Id>b7e3c2a4-5f61-4d2e-9a8b-1c2d3e4f5a6b</Id>
-  <Version>1.0.0.0</Version>
+  <Version>1.1.0.0</Version>
   <ProviderName>MIBUE.NET</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
   <DisplayName DefaultValue="Signature Manager (Add-in)"/>
-  <Description DefaultValue="Automatically inserts the company email signature when you compose a new message."/>
+  <Description DefaultValue="Inserts the company email signature automatically and lets you pick between signature templates."/>
   <IconUrl DefaultValue="https://marcbuetti.github.io/signature-addin/assets/icon-32.png"/>
   <HighResolutionIconUrl DefaultValue="https://marcbuetti.github.io/signature-addin/assets/icon-128.png"/>
   <SupportUrl DefaultValue="https://marcbuetti.github.io/signature-addin/"/>
@@ -34,7 +33,7 @@
   <FormSettings>
     <Form xsi:type="ItemRead">
       <DesktopSettings>
-        <SourceLocation DefaultValue="https://marcbuetti.github.io/signature-addin/commands/commands.html"/>
+        <SourceLocation DefaultValue="https://marcbuetti.github.io/signature-addin/taskpane/taskpane.html"/>
         <RequestedHeight>250</RequestedHeight>
       </DesktopSettings>
     </Form>
@@ -67,15 +66,38 @@
           </Runtimes>
 
           <DesktopFormFactor>
-            <!-- Required function file for the runtime. -->
             <FunctionFile resid="WebViewRuntime.Url"/>
 
-            <!-- Event-based activation: fires when the user starts a new message. -->
+            <!-- Auto-insert the default signature on new message compose. -->
             <ExtensionPoint xsi:type="LaunchEvent">
               <LaunchEvents>
                 <LaunchEvent Type="OnNewMessageCompose" FunctionName="onNewMessageComposeHandler"/>
               </LaunchEvents>
               <SourceLocation resid="WebViewRuntime.Url"/>
+            </ExtensionPoint>
+
+            <!-- Ribbon button on the compose surface to pick a signature template. -->
+            <ExtensionPoint xsi:type="MessageComposeCommandSurface">
+              <OfficeTab id="TabDefault">
+                <Group id="sigGroup">
+                  <Label resid="Group.Label"/>
+                  <Control xsi:type="Button" id="openSigPane">
+                    <Label resid="Button.Label"/>
+                    <Supertip>
+                      <Title resid="Button.Label"/>
+                      <Description resid="Button.Tip"/>
+                    </Supertip>
+                    <Icon>
+                      <bt:Image size="16" resid="Icon.16"/>
+                      <bt:Image size="32" resid="Icon.32"/>
+                      <bt:Image size="80" resid="Icon.80"/>
+                    </Icon>
+                    <Action xsi:type="ShowTaskpane">
+                      <SourceLocation resid="Taskpane.Url"/>
+                    </Action>
+                  </Control>
+                </Group>
+              </OfficeTab>
             </ExtensionPoint>
           </DesktopFormFactor>
 
@@ -83,15 +105,22 @@
       </Hosts>
 
       <Resources>
+        <bt:Images>
+          <bt:Image id="Icon.16" DefaultValue="https://marcbuetti.github.io/signature-addin/assets/icon-16.png"/>
+          <bt:Image id="Icon.32" DefaultValue="https://marcbuetti.github.io/signature-addin/assets/icon-32.png"/>
+          <bt:Image id="Icon.80" DefaultValue="https://marcbuetti.github.io/signature-addin/assets/icon-80.png"/>
+        </bt:Images>
         <bt:Urls>
           <bt:Url id="WebViewRuntime.Url" DefaultValue="https://marcbuetti.github.io/signature-addin/commands/commands.html"/>
           <bt:Url id="JSRuntime.Url" DefaultValue="https://marcbuetti.github.io/signature-addin/commands/commands.js"/>
+          <bt:Url id="Taskpane.Url" DefaultValue="https://marcbuetti.github.io/signature-addin/taskpane/taskpane.html"/>
         </bt:Urls>
         <bt:ShortStrings>
-          <bt:String id="GetStarted.Title" DefaultValue="Signature Manager Add-in"/>
+          <bt:String id="Group.Label" DefaultValue="Signatur"/>
+          <bt:String id="Button.Label" DefaultValue="Signaturen"/>
         </bt:ShortStrings>
         <bt:LongStrings>
-          <bt:String id="GetStarted.Description" DefaultValue="Your company signature is inserted automatically."/>
+          <bt:String id="Button.Tip" DefaultValue="Firmensignatur auswählen und einfügen"/>
         </bt:LongStrings>
       </Resources>
 
