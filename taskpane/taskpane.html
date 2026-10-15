@@ -36,6 +36,18 @@
       (function () {
         function setStatus(t) { document.getElementById("status").textContent = t || ""; }
 
+        // Remember the chosen template on the message, so the on-send handler re-applies the same one.
+        function remember(id) {
+          try {
+            Office.context.mailbox.item.loadCustomPropertiesAsync(function (r) {
+              if (r.status === Office.AsyncResultStatus.Succeeded && r.value) {
+                r.value.set("sigTemplate", id);
+                r.value.saveAsync(function () {});
+              }
+            });
+          } catch (e) {}
+        }
+
         Office.onReady(function (info) {
           if (info.host !== Office.HostType.Outlook) return;
           var profile = Office.context.mailbox.userProfile;
@@ -61,9 +73,12 @@
                 window.SignatureLib.build(sig.id, profile),
                 { coercionType: Office.CoercionType.Html },
                 function (res) {
-                  setStatus(res.status === Office.AsyncResultStatus.Succeeded
-                    ? "„" + sig.label + "“ eingefügt ✓"
-                    : "Fehler beim Einfügen");
+                  if (res.status === Office.AsyncResultStatus.Succeeded) {
+                    remember(sig.id);
+                    setStatus("„" + sig.label + "“ eingefügt ✓");
+                  } else {
+                    setStatus("Fehler beim Einfügen");
+                  }
                 }
               );
             });

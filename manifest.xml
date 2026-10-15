@@ -7,7 +7,7 @@
   xsi:type="MailApp">
 
   <Id>b7e3c2a4-5f61-4d2e-9a8b-1c2d3e4f5a6b</Id>
-  <Version>1.1.0.0</Version>
+  <Version>1.2.0.0</Version>
   <ProviderName>MIBUE.NET</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
   <DisplayName DefaultValue="Signature Manager (Add-in)"/>
@@ -26,7 +26,7 @@
 
   <Requirements>
     <Sets>
-      <Set Name="Mailbox" MinVersion="1.10"/>
+      <Set Name="Mailbox" MinVersion="1.12"/>
     </Sets>
   </Requirements>
 
@@ -51,7 +51,7 @@
     <VersionOverrides xmlns="http://schemas.microsoft.com/office/mailappversionoverrides/1.1" xsi:type="VersionOverridesV1_1">
 
       <Requirements>
-        <bt:Sets DefaultMinVersion="1.10">
+        <bt:Sets DefaultMinVersion="1.12">
           <bt:Set Name="Mailbox"/>
         </bt:Sets>
       </Requirements>
@@ -72,6 +72,7 @@
             <ExtensionPoint xsi:type="LaunchEvent">
               <LaunchEvents>
                 <LaunchEvent Type="OnNewMessageCompose" FunctionName="onNewMessageComposeHandler"/>
+                <LaunchEvent Type="OnMessageSend" FunctionName="onMessageSendHandler" SendMode="PromptUser"/>
               </LaunchEvents>
               <SourceLocation resid="WebViewRuntime.Url"/>
             </ExtensionPoint>
